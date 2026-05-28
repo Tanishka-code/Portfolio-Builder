@@ -43,7 +43,7 @@ const PortfolioForm = ({
       setLoadingAI(true);
 
       const response = await axios.post(
-        "http://localhost:5000/api/ai/generate-bio",
+        "http://https://portfolio-builder-backend-8js4.onrender.com/api/ai/generate-bio",
         {
           skills: formData.skills,
           role: formData.role,
@@ -72,7 +72,7 @@ const PortfolioForm = ({
     try {
 
       await axios.post(
-        "http://localhost:5000/api/portfolio",
+        "http://https://portfolio-builder-backend-8js4.onrender.com/api/portfolio",
         {
           username:
             formData.username || "",

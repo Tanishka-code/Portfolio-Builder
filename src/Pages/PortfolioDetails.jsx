@@ -40,7 +40,7 @@ const PortfolioDetails = () => {
     try {
 
       const response = await axios.get(
-        `http://localhost:5000/api/portfolio/${username}`
+        `http://https://portfolio-builder-backend-8js4.onrender.com/api/portfolio/${username}`
       );
 
       setPortfolio(response.data);
