@@ -11,7 +11,7 @@ import {
   Link,
 } from "react-router-dom";
 
-import { ThemeContext } from "../t/ThemeContext";
+import { ThemeContext } from "../context/ThemeContext";
 
 const PortfolioDetails = () => {
 
