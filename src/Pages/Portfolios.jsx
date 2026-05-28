@@ -1,10 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+
 import axios from "axios";
+
 import { Link } from "react-router-dom";
+
+import { ThemeContext } from "../context/ThemeContext";
 
 const Portfolios = () => {
 
-  const [portfolios, setPortfolios] = useState([]);
+  const [portfolios, setPortfolios] =
+    useState([]);
+
+  const { darkMode } =
+    useContext(ThemeContext);
 
   useEffect(() => {
 
@@ -40,7 +48,8 @@ const Portfolios = () => {
 
       setPortfolios(
         portfolios.filter(
-          (portfolio) => portfolio._id !== id
+          (portfolio) =>
+            portfolio._id !== id
         )
       );
 
@@ -53,7 +62,13 @@ const Portfolios = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f7fb] p-10">
+    <div
+      className={`min-h-screen p-10 transition duration-500 ${
+        darkMode
+          ? "bg-[#0f0f14]"
+          : "bg-[#f7f7fb]"
+      }`}
+    >
 
       <div className="flex justify-between items-center mb-10">
 
@@ -63,7 +78,7 @@ const Portfolios = () => {
 
         <Link
           to="/"
-          className="bg-purple-600 hover:bg-purple-700 transition px-6 py-3 rounded-2xl font-semibold text-white shadow-lg"
+          className="bg-gradient-to-r from-purple-600 to-green-500 hover:scale-105 transition px-6 py-3 rounded-2xl font-semibold text-white shadow-lg"
         >
           Back To Builder
         </Link>
@@ -76,30 +91,48 @@ const Portfolios = () => {
 
           <div
             key={portfolio._id}
-            className="bg-white p-8 rounded-[32px] border border-gray-200 shadow-xl hover:-translate-y-1 transition duration-300"
+            className={`p-8 rounded-[32px] border shadow-xl hover:-translate-y-1 transition duration-300 ${
+              darkMode
+                ? "bg-[#14141c] border-gray-800"
+                : "bg-white border-gray-200"
+            }`}
           >
 
             <Link
-              to={`/portfolio/${portfolio._id}`}
+              to={`/portfolio/${portfolio.username}`}
             >
 
-              <h2 className="text-3xl font-bold text-gray-800">
+              <h2
+                className={`text-3xl font-bold ${
+                  darkMode
+                    ? "text-white"
+                    : "text-gray-800"
+                }`}
+              >
                 {portfolio.name}
               </h2>
 
-              <p className="text-green-600 mt-3 font-medium">
-                {portfolio.role}
+              <p className="text-green-500 mt-3 font-medium">
+                @{portfolio.username}
               </p>
 
-              <p className="text-gray-500 mt-5 line-clamp-3">
-                {portfolio.about}
+              <p
+                className={`mt-5 ${
+                  darkMode
+                    ? "text-gray-400"
+                    : "text-gray-500"
+                }`}
+              >
+                {portfolio.role}
               </p>
 
             </Link>
 
             <button
               onClick={() =>
-                deletePortfolio(portfolio._id)
+                deletePortfolio(
+                  portfolio._id
+                )
               }
               className="mt-8 bg-red-500 hover:bg-red-600 transition px-5 py-3 rounded-2xl font-semibold w-full text-white"
             >

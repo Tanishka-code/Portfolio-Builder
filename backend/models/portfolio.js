@@ -2,8 +2,15 @@ import mongoose from "mongoose";
 
 const portfolioSchema = new mongoose.Schema({
 
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
   name: {
     type: String,
+    required: true,
   },
 
   role: {
@@ -14,11 +21,7 @@ const portfolioSchema = new mongoose.Schema({
     type: String,
   },
 
-  skills: [
-    {
-      type: String,
-    },
-  ],
+  skills: [String],
 
   projects: [
     {

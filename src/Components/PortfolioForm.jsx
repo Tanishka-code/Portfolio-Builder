@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+
 import axios from "axios";
+
+import { ThemeContext } from "../context/ThemeContext";
 
 const PortfolioForm = ({
   formData,
@@ -13,9 +16,16 @@ const PortfolioForm = ({
     description: "",
   });
 
+  const [loadingAI, setLoadingAI] =
+    useState(false);
+
+  const { darkMode } =
+    useContext(ThemeContext);
+
   const handleAddProject = () => {
 
-    if (!project.title || !project.description) return;
+    if (!project.title || !project.description)
+      return;
 
     setProjects([...projects, project]);
 
@@ -23,6 +33,38 @@ const PortfolioForm = ({
       title: "",
       description: "",
     });
+
+  };
+
+  const generateBio = async () => {
+
+    try {
+
+      setLoadingAI(true);
+
+      const response = await axios.post(
+        "http://localhost:5000/api/ai/generate-bio",
+        {
+          skills: formData.skills,
+          role: formData.role,
+        }
+      );
+
+      setFormData({
+        ...formData,
+        about: response.data.bio,
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+    } finally {
+
+      setLoadingAI(false);
+
+    }
+
   };
 
   const savePortfolio = async () => {
@@ -32,14 +74,21 @@ const PortfolioForm = ({
       await axios.post(
         "http://localhost:5000/api/portfolio",
         {
+          username:
+            formData.username || "",
+
           name: formData.name || "",
+
           role: formData.role || "",
+
           about: formData.about || "",
+
           skills: formData.skills
             ? formData.skills
                 .split(",")
                 .map((skill) => skill.trim())
             : [],
+
           projects,
         }
       );
@@ -53,16 +102,40 @@ const PortfolioForm = ({
       );
 
     }
+
   };
 
   return (
-    <div className="bg-white rounded-[32px] border border-gray-200 shadow-xl p-10">
+    <div
+      className={`rounded-[32px] border shadow-xl p-10 transition duration-500 ${
+        darkMode
+          ? "bg-[#14141c] border-gray-800"
+          : "bg-white border-gray-200"
+      }`}
+    >
 
       <h1 className="text-5xl font-extrabold tracking-tight mb-10 bg-gradient-to-r from-purple-600 to-green-500 bg-clip-text text-transparent">
         Create Portfolio
       </h1>
 
       <div className="space-y-6">
+
+        <input
+          type="text"
+          placeholder="Username (unique)"
+          value={formData.username}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              username: e.target.value,
+            })
+          }
+          className={`w-full p-5 rounded-2xl outline-none transition ${
+            darkMode
+              ? "bg-[#1c1c26] border border-gray-700 text-white"
+              : "bg-[#f7f7fb] border border-gray-200 text-black"
+          }`}
+        />
 
         <input
           type="text"
@@ -74,7 +147,11 @@ const PortfolioForm = ({
               name: e.target.value,
             })
           }
-          className="w-full p-5 rounded-2xl bg-[#f7f7fb] border border-gray-200 outline-none focus:border-purple-500 transition"
+          className={`w-full p-5 rounded-2xl outline-none transition ${
+            darkMode
+              ? "bg-[#1c1c26] border border-gray-700 text-white"
+              : "bg-[#f7f7fb] border border-gray-200 text-black"
+          }`}
         />
 
         <input
@@ -87,7 +164,11 @@ const PortfolioForm = ({
               role: e.target.value,
             })
           }
-          className="w-full p-5 rounded-2xl bg-[#f7f7fb] border border-gray-200 outline-none focus:border-green-500 transition"
+          className={`w-full p-5 rounded-2xl outline-none transition ${
+            darkMode
+              ? "bg-[#1c1c26] border border-gray-700 text-white"
+              : "bg-[#f7f7fb] border border-gray-200 text-black"
+          }`}
         />
 
         <textarea
@@ -99,8 +180,22 @@ const PortfolioForm = ({
               about: e.target.value,
             })
           }
-          className="w-full p-5 rounded-2xl bg-[#f7f7fb] border border-gray-200 outline-none h-40 focus:border-purple-500 transition"
+          className={`w-full p-5 rounded-2xl outline-none h-40 transition ${
+            darkMode
+              ? "bg-[#1c1c26] border border-gray-700 text-white"
+              : "bg-[#f7f7fb] border border-gray-200 text-black"
+          }`}
         />
+
+        <button
+          onClick={generateBio}
+          disabled={loadingAI}
+          className="w-full bg-gradient-to-r from-purple-600 to-green-500 hover:scale-[1.01] transition duration-300 text-white py-4 rounded-2xl font-semibold shadow-lg"
+        >
+          {loadingAI
+            ? "Generating AI Bio..."
+            : "Generate AI Bio"}
+        </button>
 
         <input
           type="text"
@@ -112,14 +207,24 @@ const PortfolioForm = ({
               skills: e.target.value,
             })
           }
-          className="w-full p-5 rounded-2xl bg-[#f7f7fb] border border-gray-200 outline-none focus:border-green-500 transition"
+          className={`w-full p-5 rounded-2xl outline-none transition ${
+            darkMode
+              ? "bg-[#1c1c26] border border-gray-700 text-white"
+              : "bg-[#f7f7fb] border border-gray-200 text-black"
+          }`}
         />
 
       </div>
 
       <div className="mt-14">
 
-        <h2 className="text-4xl font-bold mb-6 text-gray-800">
+        <h2
+          className={`text-4xl font-bold mb-6 ${
+            darkMode
+              ? "text-white"
+              : "text-gray-800"
+          }`}
+        >
           Add Projects
         </h2>
 
@@ -135,7 +240,11 @@ const PortfolioForm = ({
                 title: e.target.value,
               })
             }
-            className="w-full p-5 rounded-2xl bg-[#f7f7fb] border border-gray-200 outline-none focus:border-purple-500 transition"
+            className={`w-full p-5 rounded-2xl outline-none transition ${
+              darkMode
+                ? "bg-[#1c1c26] border border-gray-700 text-white"
+                : "bg-[#f7f7fb] border border-gray-200 text-black"
+            }`}
           />
 
           <textarea
@@ -147,7 +256,11 @@ const PortfolioForm = ({
                 description: e.target.value,
               })
             }
-            className="w-full p-5 rounded-2xl bg-[#f7f7fb] border border-gray-200 outline-none h-32 focus:border-green-500 transition"
+            className={`w-full p-5 rounded-2xl outline-none h-32 transition ${
+              darkMode
+                ? "bg-[#1c1c26] border border-gray-700 text-white"
+                : "bg-[#f7f7fb] border border-gray-200 text-black"
+            }`}
           />
 
           <div className="flex gap-4">

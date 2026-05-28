@@ -1,4 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
 import Builder from "./pages/Builder";
 import Portfolios from "./pages/Portfolios";
 import PortfolioDetails from "./pages/PortfolioDetails";
@@ -6,6 +11,7 @@ import PortfolioDetails from "./pages/PortfolioDetails";
 function App() {
 
   return (
+
     <BrowserRouter>
 
       <Routes>
@@ -21,14 +27,16 @@ function App() {
         />
 
         <Route
-          path="/portfolio/:id"
+          path="/portfolio/:username"
           element={<PortfolioDetails />}
         />
 
       </Routes>
 
     </BrowserRouter>
+
   );
+
 }
 
 export default App;
