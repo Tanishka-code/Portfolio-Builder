@@ -4,7 +4,7 @@ import axios from "axios";
 
 import { Link } from "react-router-dom";
 
-import { ThemeContext } from "../Context/t";
+import { ThemeContext } from "../t/ThemeContext";
 
 const Portfolios = () => {
 

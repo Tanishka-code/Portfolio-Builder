@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { TypeAnimation } from "react-type-animation";
 
-import { ThemeContext } from "../Context/t";
+import { ThemeContext } from "../t/ThemeContext";
 
 const PortfolioPreview = ({
   formData,
