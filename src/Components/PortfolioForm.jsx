@@ -16,9 +16,6 @@ const PortfolioForm = ({
     description: "",
   });
 
-  const [loadingAI, setLoadingAI] =
-    useState(false);
-
   const { darkMode } =
     useContext(ThemeContext);
 
@@ -33,37 +30,6 @@ const PortfolioForm = ({
       title: "",
       description: "",
     });
-
-  };
-
-  const generateBio = async () => {
-
-    try {
-
-      setLoadingAI(true);
-
-      const response = await axios.post(
-        "https://portfolio-builder-backend-8js4.onrender.com/api/ai/generate-bio",
-        {
-          skills: formData.skills,
-          role: formData.role,
-        }
-      );
-
-      setFormData({
-        ...formData,
-        about: response.data.bio,
-      });
-
-    } catch (error) {
-
-      console.log(error);
-
-    } finally {
-
-      setLoadingAI(false);
-
-    }
 
   };
 
@@ -186,16 +152,6 @@ const PortfolioForm = ({
               : "bg-[#f7f7fb] border border-gray-200 text-black"
           }`}
         />
-
-        <button
-          onClick={generateBio}
-          disabled={loadingAI}
-          className="w-full bg-gradient-to-r from-purple-600 to-green-500 hover:scale-[1.01] transition duration-300 text-white py-4 rounded-2xl font-semibold shadow-lg"
-        >
-          {loadingAI
-            ? "Generating AI Bio..."
-            : "Generate AI Bio"}
-        </button>
 
         <input
           type="text"
