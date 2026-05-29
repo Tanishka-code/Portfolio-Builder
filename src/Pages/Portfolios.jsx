@@ -25,7 +25,7 @@ const Portfolios = () => {
     try {
 
       const response = await axios.get(
-        "http://https://portfolio-builder-backend-8js4.onrender.com/api/portfolio"
+        "https://portfolio-builder-backend-8js4.onrender.com/api/portfolio"
       );
 
       setPortfolios(response.data);
@@ -43,7 +43,7 @@ const Portfolios = () => {
     try {
 
       await axios.delete(
-        `http://https://portfolio-builder-backend-8js4.onrender.com/api/portfolio/${id}`
+        `https://portfolio-builder-backend-8js4.onrender.com/api/portfolio/${id}`
       );
 
       setPortfolios(
