@@ -4,9 +4,9 @@ import {
   Route,
 } from "react-router-dom";
 
-import Builder from "./pages/Builder";
-import Portfolios from "./pages/Portfolios";
-import PortfolioDetails from "./pages/PortfolioDetails";
+import Builder from "./Pages/Builder";
+import Portfolios from "./Pages/Portfolios";
+import PortfolioDetails from "./Pages/PortfolioDetails";
 
 function App() {
 
