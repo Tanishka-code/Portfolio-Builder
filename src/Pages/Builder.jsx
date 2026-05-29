@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import PortfolioForm from "../components/PortfolioForm";
 import PortfolioPreview from "../components/PortfolioPreview";
 
-import { ThemeContext } from "../context/ThemeContext";
+import { ThemeContext } from "../context/ThemeProvider";
 
 const Builder = () => {
 
