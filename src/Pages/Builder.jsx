@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 
-import PortfolioForm from "../components/PortfolioForm";
-import PortfolioPreview from "../components/PortfolioPreview";
+import PortfolioForm from "../Components/PortfolioForm";
+import PortfolioPreview from "../Components/PortfolioPreview";
 
 import { ThemeContext } from "../context/ThemeProvider";
 
