@@ -9,7 +9,7 @@ Instead of manually editing portfolio code whenever information changes, users c
 ## 🌐 Live Demo
 
 **Frontend:**  
-[Add your Vercel URL here]
+portfolio-builder-rouge.vercel.app
 
 **Backend API:**  
 https://portfolio-builder-backend-8js4.onrender.com
