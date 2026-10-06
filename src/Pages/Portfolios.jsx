@@ -5,7 +5,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 import { ThemeContext } from "../context/ThemeContext";
-import { PORTFOLIO_API_URL } from "../api";
+import { getApiErrorMessage, PORTFOLIO_API_URL } from "../api";
 
 const Portfolios = () => {
   const [portfolios, setPortfolios] = useState([]);
@@ -20,10 +20,10 @@ const Portfolios = () => {
     try {
       const response = await axios.get(PORTFOLIO_API_URL);
       return { portfolios: response.data, error: "" };
-    } catch {
+    } catch (error) {
       return {
         portfolios: null,
-        error: "Could not load saved portfolios. Check your connection and try again.",
+        error: getApiErrorMessage(error, "Could not load saved portfolios. Please try again."),
       };
     }
   }, []);
@@ -72,11 +72,8 @@ const Portfolios = () => {
       await axios.delete(`${PORTFOLIO_API_URL}/${portfolio._id}`);
       setPortfolios((current) => current.filter((item) => item._id !== portfolio._id));
     } catch (error) {
-      const message = error.response?.data?.message;
       setDeleteError(
-        message
-          ? `Could not delete ${portfolio.name}: ${message}`
-          : `Could not delete ${portfolio.name}. Check your connection and try again.`
+        `Could not delete ${portfolio.name}: ${getApiErrorMessage(error, "Please try again.")}`
       );
     } finally {
       setDeletingId("");

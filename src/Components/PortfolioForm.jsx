@@ -4,7 +4,7 @@ import axios from "axios";
 
 import { ThemeContext } from "../context/ThemeContext";
 import ProfileAvatar from "./ProfileAvatar";
-import { PORTFOLIO_API_URL } from "../api";
+import { getApiErrorMessage, PORTFOLIO_API_URL } from "../api";
 
 const MAX_PROFILE_IMAGE_SIZE = 5 * 1024 * 1024;
 const acceptedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -173,10 +173,10 @@ const PortfolioForm = ({
       );
       setSuccessMessage("Portfolio saved successfully.");
     } catch (error) {
-      const backendMessage = error.response?.data?.message || "";
-      const message = /username.*(already exists|duplicate)|duplicate key/i.test(backendMessage)
-        ? "That username is already in use. Choose another username."
-        : backendMessage || "Could not save your portfolio. Check your connection and try again.";
+      const message = getApiErrorMessage(
+        error,
+        "Could not save your portfolio. Please try again."
+      );
 
       if (uploadingProfileImage) {
         setImageError(message);
