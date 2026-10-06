@@ -63,6 +63,7 @@ app.get("/health", (req, res) => {
     database,
   });
 });
+console.info("Health route registered");
 
 const PORT = Number(process.env.PORT) || 5000;
 
