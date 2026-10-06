@@ -29,6 +29,21 @@ app.use(cors({
 }));
 app.use(express.json({ limit: "100kb" }));
 
+const databaseIsConnected = () => mongoose.connection.readyState === 1;
+
+app.use(
+  "/api/portfolio",
+  (req, res, next) => {
+    if (!databaseIsConnected()) {
+      return res.status(503).json({
+        success: false,
+        message: "Database temporarily unavailable. Please try again shortly.",
+      });
+    }
+    return next();
+  }
+);
+
 app.use(
   "/api/portfolio",
   portfolioRoutes
@@ -40,7 +55,35 @@ app.get("/", (req, res) => {
   );
 });
 
+app.get("/health", (req, res) => {
+  const readyState = mongoose.connection.readyState;
+  const database = readyState === 1
+    ? "connected"
+    : readyState === 2
+      ? "connecting"
+      : "disconnected";
+  return res.status(readyState === 1 ? 200 : 503).json({
+    server: "ok",
+    database,
+  });
+});
+
 const PORT = Number(process.env.PORT) || 5000;
+
+mongoose.connection.on("connected", () => {
+  console.info("MongoDB connection established");
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.warn("MongoDB connection lost");
+});
+
+mongoose.connection.on("error", (error) => {
+  console.error("MongoDB connection error", {
+    name: error?.name || "Error",
+    code: error?.code || "unknown",
+  });
+});
 
 const getMongoUri = () => {
   const uri = process.env.MONGO_URI?.trim();
@@ -124,8 +167,10 @@ const startServer = async () => {
     }
   }
 
-  await mongoose.connect(process.env.MONGO_URI);
-  console.info("MongoDB connected");
+  await mongoose.connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 10000,
+    connectTimeoutMS: 10000,
+  });
 
   if (!hasDatabase) {
     console.warn("MONGO_URI has no database name; MongoDB will use its default database. Add /<DATABASE_NAME> to the URI if you intend to use a named database.");

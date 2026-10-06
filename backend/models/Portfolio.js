@@ -52,7 +52,7 @@ const portfolioSchema =
       },
     ],
 
-  });
+  }, { bufferCommands: false });
 
 const Portfolio =
   mongoose.model(
