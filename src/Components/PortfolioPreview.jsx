@@ -1,15 +1,32 @@
 import { useContext } from "react";
 import { TypeAnimation } from "react-type-animation";
 
-import { ThemeContext } from "../context/ThemeProvider";
+import { ThemeContext } from "../context/ThemeContext";
+import ProfileAvatar from "./ProfileAvatar";
+
+const isSafeSocialUrl = (value) => {
+  try {
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol) && Boolean(url.hostname);
+  } catch {
+    return false;
+  }
+};
 
 const PortfolioPreview = ({
   formData,
   projects,
+  profileImage,
 }) => {
 
   const { darkMode } =
     useContext(ThemeContext);
+  const socialLinks = [
+    { label: "GitHub", url: formData.socialLinks?.github },
+    { label: "LinkedIn", url: formData.socialLinks?.linkedin },
+    { label: "Website", url: formData.socialLinks?.website },
+    { label: "X / Twitter", url: formData.socialLinks?.twitter },
+  ].filter(({ url }) => url?.trim() && isSafeSocialUrl(url));
 
   return (
     <div
@@ -29,6 +46,12 @@ const PortfolioPreview = ({
       {/* Content */}
 
       <div className="relative z-10">
+
+        <ProfileAvatar
+          src={profileImage || formData.profileImage}
+          alt={`${formData.name || "Your"} profile image`}
+          className="mb-6 h-28 w-28 sm:h-32 sm:w-32"
+        />
 
         <h1 className="text-6xl font-extrabold tracking-tight bg-gradient-to-r from-purple-600 to-green-500 bg-clip-text text-transparent leading-tight">
 
@@ -84,6 +107,22 @@ const PortfolioPreview = ({
             "Write something about yourself..."}
 
         </p>
+
+        {socialLinks.length > 0 && (
+          <div className="mt-6 flex flex-wrap gap-3">
+            {socialLinks.map(({ label, url }) => (
+              <a
+                key={label}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-gradient-to-r from-purple-600 to-green-500 px-4 py-2 text-sm font-semibold text-white shadow transition hover:scale-105"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        )}
 
         <div
           className={`mt-12 pt-10 border-t transition duration-500 ${
