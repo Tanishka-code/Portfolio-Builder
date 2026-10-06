@@ -87,42 +87,170 @@ const PortfolioDetails = () => {
   }, [username]);
 
   const downloadPdf = async () => {
-    if (!portfolio || !pdfDocumentRef.current || pdfGeneratingRef.current) return;
+    const exportElement = pdfDocumentRef.current;
+    if (!portfolio || !exportElement || pdfGeneratingRef.current) return;
+
+    const elementBounds = exportElement.getBoundingClientRect();
+    if (elementBounds.width <= 0 || exportElement.scrollHeight <= 0) {
+      setPdfError("The portfolio content is not ready to export. Please try again.");
+      return;
+    }
 
     pdfGeneratingRef.current = true;
     setPdfGenerating(true);
     setPdfError("");
 
     try {
-      const { jsPDF } = await import("jspdf");
-      const profileImage = pdfDocumentRef.current.querySelector("img");
+      const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
+        import("jspdf"),
+        import("html2canvas"),
+      ]);
+
+      if (document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+
+      const profileImage = exportElement.querySelector("img");
+      let profileImageReady = false;
       if (profileImage) {
-        await profileImage.decode();
+        try {
+          await profileImage.decode();
+          profileImageReady = profileImage.naturalWidth > 0 && profileImage.naturalHeight > 0;
+        } catch {
+          // The rest of the portfolio should still export if Cloudinary rejects CORS or the image is unavailable.
+        }
+      }
+
+      const captureCanvas = async (omitProfileImage = false) => {
+        const canvas = await html2canvas(exportElement, {
+          scale: 1.5,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: "#ffffff",
+          logging: false,
+          windowWidth: 794,
+          windowHeight: Math.max(window.innerHeight, 900),
+          scrollX: 0,
+          scrollY: 0,
+          onclone: async (clonedDocument) => {
+            const clonedExport = clonedDocument.getElementById("portfolio-pdf-document");
+            if (!clonedExport) return;
+
+            // Put the rendered export document in the clone's viewport so the canvas captures real content.
+            Object.assign(clonedExport.style, {
+              display: "block",
+              position: "absolute",
+              top: "0",
+              left: "0",
+              right: "auto",
+              width: "794px",
+              margin: "0",
+              transform: "none",
+              visibility: "visible",
+            });
+
+            if (omitProfileImage || !profileImageReady) {
+              clonedExport.querySelector("img")?.remove();
+            }
+
+            if (clonedDocument.fonts?.ready) await clonedDocument.fonts.ready;
+          },
+        });
+
+        if (!canvas.width || !canvas.height) {
+          throw new Error("PDF capture produced an empty canvas");
+        }
+
+        // Refuse to download a blank image even if the canvas dimensions look valid.
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        const pixels = context?.getImageData(0, 0, canvas.width, canvas.height).data;
+        let hasVisibleContent = false;
+        if (pixels) {
+          for (let index = 0; index < pixels.length; index += 160) {
+            if (pixels[index] < 245 || pixels[index + 1] < 245 || pixels[index + 2] < 245) {
+              hasVisibleContent = true;
+              break;
+            }
+          }
+        }
+        if (!hasVisibleContent) {
+          throw new Error("PDF capture contained no visible portfolio content");
+        }
+
+        return canvas;
+      };
+
+      let canvas;
+      try {
+        canvas = await captureCanvas(false);
+      } catch (imageCaptureError) {
+        if (!profileImage || !profileImageReady) throw imageCaptureError;
+        canvas = await captureCanvas(true);
       }
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      await pdf.html(pdfDocumentRef.current, {
-        x: 14,
-        y: 14,
-        width: 182,
-        windowWidth: 794,
-        autoPaging: "text",
-        margin: [14, 14, 14, 14],
-        html2canvas: {
-          scale: 1.5,
-          useCORS: true,
-          backgroundColor: "#ffffff",
-          logging: false,
-          onclone: (clonedDocument) => {
-            const exportDocument = clonedDocument.getElementById("portfolio-pdf-document");
-            if (exportDocument) {
-              exportDocument.style.position = "static";
-              exportDocument.style.left = "auto";
-              exportDocument.style.top = "auto";
+      const margin = 14;
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const contentWidth = pageWidth - margin * 2;
+      const contentHeight = pageHeight - margin * 2;
+      const sourcePageHeight = Math.floor((contentHeight / contentWidth) * canvas.width);
+      const context = canvas.getContext("2d");
+      let sourceY = 0;
+      let pageIndex = 0;
+
+      while (sourceY < canvas.height) {
+        const targetY = Math.min(sourceY + sourcePageHeight, canvas.height);
+        let pageEndY = targetY;
+
+        // Prefer a nearby blank row for page breaks so paragraphs are less likely to split mid-line.
+        if (targetY < canvas.height) {
+          const searchStart = Math.max(sourceY + 1, targetY - 100);
+          const searchHeight = targetY - searchStart;
+          const pixels = context.getImageData(0, searchStart, canvas.width, searchHeight).data;
+          for (let row = searchHeight - 1; row >= 0; row -= 1) {
+            let nonWhiteSamples = 0;
+            for (let x = 0; x < canvas.width; x += 16) {
+              const pixelIndex = (row * canvas.width + x) * 4;
+              if (pixels[pixelIndex] < 245 || pixels[pixelIndex + 1] < 245 || pixels[pixelIndex + 2] < 245) {
+                nonWhiteSamples += 1;
+                if (nonWhiteSamples > 2) break;
+              }
             }
-          },
-        },
-      });
+            if (nonWhiteSamples === 0) {
+              pageEndY = searchStart + row;
+              break;
+            }
+          }
+        }
+
+        const sliceHeight = Math.max(1, pageEndY - sourceY);
+        const pageCanvas = document.createElement("canvas");
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = sliceHeight;
+        pageCanvas.getContext("2d").drawImage(
+          canvas,
+          0,
+          sourceY,
+          canvas.width,
+          sliceHeight,
+          0,
+          0,
+          canvas.width,
+          sliceHeight
+        );
+
+        if (pageIndex > 0) pdf.addPage();
+        const sliceHeightMm = (sliceHeight / canvas.width) * contentWidth;
+        const imageData = pageCanvas.toDataURL("image/jpeg", 0.95);
+        if (imageData.length < 100) {
+          throw new Error("PDF page image was empty");
+        }
+        pdf.addImage(imageData, "JPEG", margin, margin, contentWidth, sliceHeightMm);
+
+        sourceY = pageEndY;
+        pageIndex += 1;
+      }
 
       const filename = `${(portfolio.username || "portfolio")
         .toLowerCase()
@@ -130,12 +258,8 @@ const PortfolioDetails = () => {
         .replace(/^-+|-+$/g, "") || "portfolio"}-portfolio.pdf`;
       pdf.save(filename);
     } catch (generationError) {
-      console.error("Portfolio PDF export failed:", generationError);
-      setPdfError(
-        portfolio.profileImage
-          ? "The PDF could not be generated. Check that the profile image is reachable, then try again."
-          : "The PDF could not be generated. Please try again."
-      );
+      console.error("Portfolio PDF export failed:", generationError.message);
+      setPdfError("The PDF could not be generated. Please try again.");
     } finally {
       pdfGeneratingRef.current = false;
       setPdfGenerating(false);
