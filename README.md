@@ -2,14 +2,14 @@
 
 A full-stack web application that allows users to create, customize, save, edit, share, and download professional portfolios through a simple and responsive interface.
 
-Instead of manually editing portfolio code whenever information changes, users can enter their details, add projects, upload a profile image, connect social links, preview the portfolio in real time, and export it as a PDF.
+Portfolio Builder eliminates the need to manually edit portfolio code whenever personal information, skills, or projects change.
 
 ---
 
 ## 🌐 Live Demo
 
-**Frontend:**  
-portfolio-builder-rouge.vercel.app
+**Live Website:**  
+https://portfolio-builder-rouge.vercel.app
 
 **Backend API:**  
 https://portfolio-builder-backend-8js4.onrender.com
@@ -23,91 +23,84 @@ https://github.com/Tanishka-code/Portfolio-Builder
 
 Creating and maintaining a personal portfolio often requires manually editing HTML, CSS, or React components whenever new projects, skills, or personal information need to be added.
 
-This process can be time-consuming, especially when a portfolio needs to be updated frequently.
+This can become time-consuming when portfolios need to be updated regularly.
 
 ### Solution
 
-Portfolio Builder provides a simple interface where users can:
+Portfolio Builder provides a simple interface where users can enter their information, add projects, upload a profile image, connect social links, preview the portfolio in real time, and download the finished portfolio as a PDF.
 
-- Enter their personal information
-- Add skills and projects
-- Upload a profile image
-- Add social links
-- Preview the portfolio while editing
-- Save and manage portfolios
-- Access a public portfolio using a unique username
-- Download the portfolio as a PDF
-
-The goal is to make portfolio creation and maintenance simpler without requiring users to modify source code every time their information changes.
+The application is designed to make portfolio creation and management easier without requiring users to modify source code for every update.
 
 ---
 
 ## ✨ Features
 
-### 🧑‍💻 Portfolio Builder
+### Portfolio Builder
 
 - Enter username, name, role, and About information
 - Add comma-separated skills
 - Add multiple projects
 - Add project title and description
-- Live preview while editing
-- Animated typing tagline in the preview
+- Live portfolio preview
+- Animated typing tagline
 
-### 📂 Portfolio Management
+### Portfolio Management
 
 - Create and save portfolios
 - View saved portfolios
 - Edit existing portfolios
 - Delete portfolios
 - Unique username validation
-- Fetch portfolio using username
-- Public portfolio details page
+- Public portfolio pages using usernames
 
-### 🖼️ Profile Image
+### Profile Image
 
-- Upload a profile image
+- Upload profile images
 - Supports JPG, JPEG, PNG, and WEBP
 - Maximum file size of 5 MB
-- Image preview before saving
+- Instant image preview
 - Cloudinary-based image storage
 - Profile image displayed in the portfolio
 
-### 🔗 Social Links
+### Social Links
 
 - GitHub
 - LinkedIn
 - Portfolio Website
 - X/Twitter
-- Social icons are displayed only when a link is provided
-- Links open in a new tab
+- Social links displayed only when provided
+- Links open in a new browser tab
 
-### 🎨 Themes
+### Light & Dark Mode
 
-- Light mode
-- Dark mode
-- Theme preference stored using browser `localStorage`
+- Light theme
+- Dark theme
+- Theme preference stored using browser localStorage
 
-### 📄 PDF Export
+### PDF Export
 
-- Download portfolio as a PDF
-- Includes portfolio information, skills, projects, profile image, and social links
-- Supports longer portfolios across multiple pages
-- Generates the PDF directly from the browser
+- Download portfolios as PDF
+- Includes profile information
+- Includes skills and projects
+- Includes profile image when available
+- Includes social links
+- Supports multi-page portfolio content
+- Generates the PDF directly in the browser
 
-### 📱 Responsive Design
+### Responsive Design
 
-- Responsive builder layout
-- Responsive portfolio preview
+- Responsive portfolio builder
+- Responsive preview
 - Responsive saved portfolio cards
-- Works across desktop, tablet, and mobile screen sizes
+- Mobile-friendly portfolio pages
 
-### ⚙️ User Experience
+### User Experience
 
-- Loading states
-- Error handling
 - Form validation
-- Save and update feedback
-- Clean and simple interface
+- Loading states
+- Save/update feedback
+- Error handling
+- Responsive interface
 
 ---
 
@@ -115,64 +108,67 @@ The goal is to make portfolio creation and maintenance simpler without requiring
 
 ### Frontend
 
-- **React 19**
-- **Vite**
-- **Tailwind CSS**
-- **React Router**
-- **Axios**
-- **react-type-animation**
-- **jsPDF**
-- **html2canvas**
+- React 19
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+- React Type Animation
 
 ### Backend
 
-- **Node.js**
-- **Express.js**
-- **Mongoose**
-- **CORS**
+- Node.js
+- Express.js
+- Mongoose
+- CORS
 
 ### Database
 
-- **MongoDB Atlas**
+- MongoDB Atlas
 
 ### Image Storage
 
-- **Cloudinary**
+- Cloudinary
+
+### PDF Generation
+
+- jsPDF
+- html2canvas
 
 ### Deployment
 
-- **Vercel** — Frontend
-- **Render** — Backend
+- Vercel — Frontend
+- Render — Backend
 
 ---
 
 ## 🏗️ Architecture
 
 ```text
-                    ┌─────────────────────┐
-                    │       User          │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   React Frontend    │
-                    │  Vite + Tailwind    │
-                    └──────────┬──────────┘
-                               │
-                         REST API
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   Express Backend   │
-                    │    Node.js + API    │
-                    └───────┬───────┬─────┘
-                            │       │
-                            │       │
-                            ▼       ▼
-                 ┌─────────────┐  ┌─────────────┐
-                 │  MongoDB    │  │  Cloudinary │
-                 │    Atlas     │  │   Images    │
-                 └─────────────┘  └─────────────┘
+                         ┌──────────────────┐
+                         │      User        │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │ React Frontend   │
+                         │ Vite + Tailwind  │
+                         └────────┬─────────┘
+                                  │
+                              REST API
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │ Express Backend  │
+                         │     Node.js      │
+                         └───────┬───┬──────┘
+                                 │   │
+                    ┌────────────┘   └─────────────┐
+                    ▼                              ▼
+             ┌──────────────┐              ┌──────────────┐
+             │ MongoDB Atlas│              │  Cloudinary  │
+             │   Database   │              │ Profile Img  │
+             └──────────────┘              └──────────────┘
 
 📂 Project Structure
 Portfolio-Builder/
@@ -192,92 +188,48 @@ Portfolio-Builder/
 │
 ├── src/
 │   ├── Components/
-│   │   ├── PortfolioForm.jsx
-│   │   └── ...
-│   │
 │   ├── Pages/
-│   │   ├── Builder.jsx
-│   │   ├── Portfolios.jsx
-│   │   ├── PortfolioDetails.jsx
-│   │   └── ...
-│   │
 │   ├── Context/
-│   │   ├── ThemeProvider.jsx
-│   │   └── ...
-│   │
 │   ├── api.js
 │   ├── App.jsx
 │   ├── main.jsx
 │   └── index.css
-│
-├── screenshots/
 │
 ├── package.json
 ├── vite.config.js
 ├── vercel.json
 └── README.md
 
-🔄 How It Works
-1. Create a Portfolio
-The user fills in:
-- Username
-- Name
-- Role
-- About
-- Skills
-- Projects
-- Social links
-- Profile image
-2. Live Preview
-The preview updates dynamically as the user enters information.
-3. Upload Profile Image
-The selected image is uploaded to Cloudinary through the backend.
-The resulting secure image URL is then associated with the portfolio.
-4. Save Portfolio
-Portfolio information is sent from the React frontend to the Express backend using REST APIs.
-5. Store Data
-The backend stores portfolio information in MongoDB Atlas using Mongoose.
-6. Manage Portfolios
-Users can:
-- View saved portfolios
-- Edit portfolios
-- Delete portfolios
-7. Public Portfolio
-Each portfolio can be viewed through its unique username.
-8. Export Portfolio
-Users can download their portfolio as a PDF directly from the application.
+🔄 Application Workflow
+1. Create
+Users enter their personal information, skills, projects, social links, and profile image.
+2. Preview
+The portfolio preview updates dynamically while the user fills out the form.
+3. Upload Image
+If a profile image is selected, it is uploaded through the backend to Cloudinary.
+4. Save
+Portfolio information is sent to the Express REST API.
+5. Store
+The backend stores portfolio data in MongoDB Atlas using Mongoose.
+6. Manage
+Saved portfolios can be viewed, edited, and deleted.
+7. Share
+Each portfolio can be accessed through its unique username.
+8. Export
+Users can download the completed portfolio as a PDF.
 🔌 API Endpoints
-Health Check
-GET /health
+Method	Endpoint	Description
+GET	/health	Checks backend and database status
+POST	/api/portfolio	Creates a portfolio
+GET	/api/portfolio	Returns all portfolios
+GET	/api/portfolio/:username	Fetches a portfolio by username
+PUT	/api/portfolio/:id	Updates an existing portfolio
+DELETE	/api/portfolio/:id	Deletes a portfolio
+POST	/api/portfolio/upload-profile-image	Uploads a profile image
 
-Checks whether the backend is running and whether MongoDB is connected.
-Create Portfolio
-POST /api/portfolio
 
-Creates and stores a new portfolio.
-Get All Portfolios
-GET /api/portfolio
-
-Returns all saved portfolios.
-Get Portfolio by Username
-GET /api/portfolio/:username
-
-Fetches a portfolio using its unique username.
-Update Portfolio
-PUT /api/portfolio/:id
-
-Updates an existing portfolio.
-Delete Portfolio
-DELETE /api/portfolio/:id
-
-Deletes a portfolio using its MongoDB document ID.
-Upload Profile Image
-POST /api/portfolio/upload-profile-image
-
-Uploads a profile image to Cloudinary and returns the stored image URL.
-⚙️ Getting Started
-Prerequisites
-Make sure you have installed:
+⚙️ Prerequisites
+Before running the project, install:
 - Node.js
 - npm
 - MongoDB Atlas account
@@ -285,7 +237,6 @@ Make sure you have installed:
 📥 Installation
 1. Clone the repository
 git clone https://github.com/Tanishka-code/Portfolio-Builder.git
-
 cd Portfolio-Builder
 
 2. Install frontend dependencies
@@ -297,7 +248,7 @@ npm install
 
 🔐 Environment Variables
 Backend
-Create a file:
+Create:
 backend/.env
 
 Add:
@@ -310,99 +261,97 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 FRONTEND_ORIGINS=http://localhost:5173,https://your-vercel-domain
 
 Frontend
-If required by your deployment configuration, create:
-.env
+Set:
+VITE_API_URL=http://localhost:5000/api/portfolio
 
-with:
+For production, use:
 VITE_API_URL=https://portfolio-builder-backend-8js4.onrender.com/api/portfolio
 
-Never commit .env files or secret credentials to GitHub.
+Never commit .env files, MongoDB credentials, or Cloudinary secrets to GitHub.
 
-▶️ Running the Project Locally
-Start the Backend
+▶️ Run Locally
+Start the backend
 From the backend directory:
 npm start
 
-The backend normally runs on:
+Backend:
 http://localhost:5000
 
-Start the Frontend
+Start the frontend
 Open another terminal in the project root:
 npm run dev
 
-The frontend normally runs on:
+Frontend:
 http://localhost:5173
 
-🧪 Testing the Application
-After starting both frontend and backend:
-Test Portfolio Creation
-1. Open the frontend
-2. Enter username, name, and role
-3. Add skills
-4. Add projects
-5. Add social links
-6. Upload a profile image
-7. Preview the portfolio
-8. Click Save Portfolio
-Test Portfolio Management
-1. Open Saved Portfolios
-2. View a portfolio
-3. Edit the portfolio
-4. Save changes
-5. Delete the portfolio
-Test PDF Export
-1. Open a saved portfolio
-2. Select Download PDF
-3. Verify the generated PDF contains the portfolio information
-Test Themes
-1. Switch between Light and Dark mode
-2. Refresh the page
-3. Verify the selected theme is preserved
+🧪 Testing
+The main application flow can be tested as follows:
+Portfolio Creation
+1. Enter username, name, and role.
+2. Add About information.
+3. Add skills.
+4. Add projects.
+5. Add social links.
+6. Upload a profile image.
+7. Preview the portfolio.
+8. Save the portfolio.
+Portfolio Management
+1. Open Saved Portfolios.
+2. View a portfolio.
+3. Edit the portfolio.
+4. Save changes.
+5. Delete the portfolio.
+PDF Export
+1. Open a saved portfolio.
+2. Click Download PDF.
+3. Verify that the generated PDF contains the portfolio information.
+Theme
+1. Switch between Light Mode and Dark Mode.
+2. Refresh the page.
+3. Verify that the selected theme is preserved.
 ☁️ Deployment
-Frontend — Vercel
+Frontend
 The React frontend is deployed using Vercel.
-The Vercel configuration includes support for client-side React Router routes.
-Backend — Render
-The Express backend is deployed using Render.
+Backend
+The Node.js and Express backend is deployed using Render.
 Production backend:
 https://portfolio-builder-backend-8js4.onrender.com
 
-Database — MongoDB Atlas
-Portfolio data is stored in MongoDB Atlas.
-Image Storage — Cloudinary
-Profile images are stored in Cloudinary, while the resulting secure image URL is saved with the portfolio data.
-🔒 Security and Configuration
+Database
+The application uses MongoDB Atlas for cloud database storage.
+Image Storage
+Profile images are stored using Cloudinary.
+🔒 Security
 The project uses environment variables for sensitive configuration.
-Sensitive values include:
+Sensitive information includes:
 - MongoDB connection string
 - Cloudinary API secret
-- Other deployment-specific credentials
-These values are kept outside the source code.
-The .env file is excluded from version control.
-🧠 Key Learning Outcomes
-Building this project provided practical experience with:
-- React component development
+- Deployment-specific credentials
+These values are kept outside the source code and are not committed to version control.
+🧠 Learning Outcomes
+This project provided practical experience in:
+- React development
+- Component-based architecture
 - React Router
-- State management
-- REST API design
+- REST API development
 - Express.js
 - MongoDB and Mongoose
 - CRUD operations
 - Cloudinary integration
-- File uploads
+- Image uploads
 - FormData and multipart requests
 - Axios
 - CORS configuration
 - Environment variables
 - Responsive UI design
-- Light/Dark theme implementation
+- Light/Dark mode implementation
 - Browser-based PDF generation
 - Vercel deployment
 - Render deployment
 - Production debugging
-A major part of the learning process involved solving real deployment and integration problems across the frontend, backend, database, and external services.
-🚧 Current Project Scope
-The current version focuses on the core portfolio-building workflow:
+The project also provided hands-on experience troubleshooting real deployment issues involving DNS resolution, MongoDB Atlas connectivity, environment configuration, CORS, Cloudinary, and frontend-backend integration.
+🚀 Project Highlights
+The application provides a complete portfolio management workflow:
 Create
    ↓
 Preview
@@ -421,7 +370,6 @@ Share
    ↓
 Download PDF
 
-The project is intentionally focused on portfolio creation and management without adding unnecessary complexity.
 🔮 Future Improvements
 Possible future enhancements include:
 - User authentication
@@ -429,7 +377,7 @@ Possible future enhancements include:
 - Custom portfolio domains
 - Portfolio analytics
 - Additional customization options
-These are outside the current core scope.
+These features are outside the current core scope of the project.
 👩‍💻 Author
 Tanishka Tawate
 GitHub:
@@ -438,3 +386,5 @@ LinkedIn:
 https://www.linkedin.com/in/tanishka-tawate-53238a3ab
 ⭐ Support
 If you find this project useful or interesting, consider giving the repository a ⭐ on GitHub.
+📄 License
+This project is created for learning, development, and portfolio demonstration purposes.
